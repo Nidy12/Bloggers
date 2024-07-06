@@ -1,8 +1,11 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import PropTypes from "prop-types";
 
-const AddBlogPage = () => {
+const AddBlogPage = ({ createBlog }) => {
   const [title, settitle] = useState("");
   const [content, setcontent] = useState("");
+  const navigate = useNavigate();
 
   const newblog = {
     title: title,
@@ -12,6 +15,8 @@ const AddBlogPage = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(newblog);
+    createBlog(newblog);
+    navigate("/");
   };
 
   return (
@@ -65,6 +70,10 @@ const AddBlogPage = () => {
       </form>
     </div>
   );
+};
+
+AddBlogPage.propTypes = {
+  createBlog: PropTypes.bool.isRequired,
 };
 
 export default AddBlogPage;
