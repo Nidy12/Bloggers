@@ -1,11 +1,24 @@
-import PropTypes from "prop-types";
 import "./Modal.css";
+import { useNavigate } from "react-router-dom";
 
-const Modal = ({ showModal, handleClose }) => {
+const Modal = ({ negateModal, title, deleteBlog }) => {
+  const navigate = useNavigate();
+
+  const deleteCurrentBlog = () => {
+    deleteBlog();
+    negateModal();
+    navigate("/");
+  };
+
   return (
-    <div className={`modal ${showModal ? "show" : ""}`} id="popup-modal">
+    <div id="popup-modal" className="modal">
       <div className="modal-content">
-        <button type="button" className="close-button" onClick={handleClose}>
+        <button
+          type="button"
+          onClick={negateModal}
+          className="close-button"
+          data-modal-hide="popup-modal"
+        >
           <svg
             className="close-icon"
             aria-hidden="true"
@@ -40,23 +53,22 @@ const Modal = ({ showModal, handleClose }) => {
             />
           </svg>
           <h3 className="modal-title">
-            Are you sure you want to delete this product?
+            Are you sure you want to delete this blog - {title}?
           </h3>
-          <button type="button" className="confirm-button">
-            Yes, Im sure
+          <button
+            type="button"
+            onClick={deleteCurrentBlog}
+            className="confirm-button"
+          >
+            Yes, I'm sure
           </button>
-          <button type="button" className="cancel-button" onClick={handleClose}>
+          <button type="button" onClick={negateModal} className="cancel-button">
             No, cancel
           </button>
         </div>
       </div>
     </div>
   );
-};
-
-Modal.propTypes = {
-  showModal: PropTypes.bool.isRequired,
-  handleClose: PropTypes.func.isRequired,
 };
 
 export default Modal;

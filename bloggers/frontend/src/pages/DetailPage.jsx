@@ -5,10 +5,13 @@ import { Link, useParams } from "react-router-dom";
 import Modal from "../components/Modal";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const DetailPage = () => {
   const { slug } = useParams();
   const [blog, setblog] = useState({});
+  const [showModal, setShowModal] = useState(false);
+
   useEffect(() => {
     axios
       .get(`http://127.0.0.1:8000/blogs/${slug}`)
@@ -18,14 +21,26 @@ const DetailPage = () => {
       })
       .catch((err) => console.log(err.message));
   }, []);
-  const [showModal, setShowModal] = useState(false);
 
-  const handleShowModal = () => {
-    setShowModal(true);
+  // const handleShowModal = () => {
+  //   setShowModal(true);
+  // };
+
+  // const handleCloseModal = () => {
+  //   setShowModal(false);
+  // };
+
+  const negateModal = () => {
+    setShowModal((showModal) => !showModal);
   };
 
-  const handleCloseModal = () => {
-    setShowModal(false);
+  const deleteBlog = () => {
+    axios
+      .delete(`http://127.0.0.1:8000/blogs/${slug}/`)
+      .then((res) => {
+        toast.success("Blog DELETED successfully");
+      })
+      .catch((err) => console.log(err.message));
   };
 
   return (
@@ -54,7 +69,10 @@ const DetailPage = () => {
           <button
             type="button"
             className="flex items-center focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2"
-            onClick={handleShowModal}
+            // onClick={handleShowModal}
+            data-modal-target="popup-modal"
+            data-modal-toggle="popup-modal"
+            onClick={negateModal}
           >
             <MdDelete className="mr-2 text-xl" /> Delete
           </button>
@@ -64,7 +82,7 @@ const DetailPage = () => {
         </div>
       </div>
 
-      <Modal showModal={showModal} handleClose={handleCloseModal} />
+      {showModal && <Modal negateModal={negateModal} deleteBlog={deleteBlog} />}
     </div>
   );
 };
